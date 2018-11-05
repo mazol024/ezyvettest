@@ -1,10 +1,11 @@
+<?php
+session_start();?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Basic Shopping Cart</title>
     <link rel="stylesheet" href="main.css">
-    <script src="jquery/jquery-3.3.1.min.js"></script>
 </head>
 <body>
 <script>
@@ -13,7 +14,6 @@
     }
 </script>
 <?php
-session_start();
 include ("Cart.php");
 $temp1 = 0;
 ?>
@@ -21,27 +21,24 @@ $temp1 = 0;
         <form id="shopform" method="post" action="showCart.php">
             <?php
            if (($_SESSION['created']) == false ) {
-               $oo = new Cart;
+               $oo = new Cart($products);
               $_SESSION['created']=true;
               $_SESSION['mycart'] = serialize($oo);
             }
             $oo = unserialize($_SESSION['mycart']);
+            echo "<h3>Current Products:</h3>";
             for ($i = 0; $i < sizeof($products); $i++) {
-                echo "<br>";
-                echo "Product name: " . $products[$i]["name"] . ",  price: " . $products[$i]["price"];
+                echo "Product name: " . $products[$i]["name"] . ",  price per item: $" . $products[$i]["price"];
                 echo "<br><label for=\"id$i\"> in your cart:</label> ";
                 $howmany = $oo->getItems($i);
                 $oo->removeProduct($i);
                 echo "<input type='text' name=\"id$i\" id=\"id$i\" value=\"$howmany\" size='2' onclick=\"this.value = parseInt(this.value)+1;
                  \"> ";
-
                 echo "<br>";
             }
-
             ?>
-
-            <input  type="submit" name="submit" onclick="<?php $_SESSION['mycart'] = serialize($oo);?>">
-
+            <br><hr>
+            <input  type="submit" value="Check Out" onclick="<?php $_SESSION['mycart'] = serialize($oo);?>">
         </form>
     </div>
 </body>
